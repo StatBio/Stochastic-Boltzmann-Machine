@@ -1,0 +1,71 @@
+# SBM: Stochastic Boltzmann Machine
+Tested with Python 3.7.3
+
+## Prerequisites
+
+### Create a virtual env
+
+First of all, I recommend creating a virtual environment. Here's an example using virtualenv:
+
+```
+pip3 install virtualenv
+virtualenv -p python3 env_SBM
+source env_SBM/bin/activate
+```
+
+### Install requirements
+
+Install python and python library from requirements.txt: 
+```
+pip3 install -r requirements.txt --no-cache-dir
+```
+
+### Compile C_MonteCarlo module:
+
+```
+sh src/SBM/MonteCarlo/MCMC_Potts/make_mcmc_Potts.sh
+```
+
+### Install the editable version of SBM :
+
+```
+pip3 install -e .
+```
+
+## Dataset format
+
+Before using SBM to infer fields and couplings from a MSA you need to load your fasta file and turn this fasta file into a numpy array of size (Number of sequences x Protein length)
+
+```python
+import SBM.utils.utils as ut
+MSA = ut.load_fasta('fasta_file')
+np.save('data/MSA_array/MSA_fam.npy',MSA)
+```
+
+## Training
+
+See demo_SBM for an example
+
+## Example inside data folder
+
+```
+data/
+├── fasta
+├── MSA_array
+	└── MSA_CM.npy
+├── Ind_train
+	└── Ind_train_CM.npy
+```
+
+
+## How to use jupyter notebook on a server
+
+```
+pip3 install ipykernel
+````
+
+Then you can create a notebook and choose python environment env_SBM
+
+## Citation
+
+If you use this code or data, please cite the associated publication:
