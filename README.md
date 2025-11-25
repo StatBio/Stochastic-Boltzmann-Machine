@@ -1,7 +1,7 @@
 # SBM: Stochastic Boltzmann Machine
 Tested with Python 3.11.11
 
-SBM contains the implementation of a boltzmann machine with L-BFGS gradient descent and implicit regularization. The Monte-Carlo is written in C++ with OpenMP, compiled automatically using scikit-build-core and CMake and 
+SBM contains the implementation of a boltzmann machine with L-BFGS gradient descent and implicit regularization. The Monte-Carlo is written in C++ with OpenMP, compiled automatically using scikit-build-core and CMake.
 
 ## Installation
 
