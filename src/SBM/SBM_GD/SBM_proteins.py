@@ -1,24 +1,16 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 """
 Created on Fri Oct 23 00:25:00 2020
 
-@author: yaakov KLEEORIN
-Modified by: Marion CHAUVEAU
+@author: yaakov KLEEORIN & Marion CHAUVEAU
 """
 
 ####################### MODULES #######################
 
 import numpy as np
-import itertools as it
-from scipy.spatial.distance import pdist,squareform
-import MonteCarlo_Potts # type: ignore
-from scipy import stats
 from tqdm import tqdm
 import time
-import more_itertools as mit # type: ignore
+import more_itertools as mit
 import SBM.utils.utils as ut
-import SBM.SCA.sca_pruning as prun
 
 ##########################################################
 
@@ -48,7 +40,7 @@ def ParseOptions(options):
         ('Pruning Mask Couplings', None),
         ('Infinite Mask Fields',None), # To forbid certain a.a at certain positions
         
-        ('Param_init', 'Profile'), # Zero, Profile, Custom
+        ('Param_init', 'profile'), # Zero, Profile, Custom
 
         ('Test/Train', True), #If True and 'Train sequences' is None: the MSA is randomly splitted in a 80% training set / 20% test set
         ('Train sequences',None), #indices of sequences used for training
@@ -175,59 +167,22 @@ def Init_Pruning(options, fij):
             options['Pruning Mask Couplings'] = Mask.astype('int')
             print('Pruning pct: ', 1 - np.sum(Mask) / Mask.size)
 
-
-    ############ PRUNING ###########
-    # if options['Pruning']:
-    #     if options['Pruning Mask Couplings'] is None:
-
-    #         Mask = prun.prune_params(train_align,cij=False,fij=True, weight=0.8, pct = 100*options['Pruning_perc'])
-
-    #         options['Pruning Mask Couplings'] = Mask.astype('bool')
-    #         assert shape_fij == Mask.shape
-    #         print('Pruning pct: ',1-np.sum(Mask)/np.sum(np.ones(Mask.shape)))
-
-            # if options['Pruning_perc'] ==0:
-            #     options['Pruning Mask Couplings'] = np.ones(shape_fij).astype('bool')
-            # elif options['Pruning_perc']==1:
-            #     options['Pruning Mask Couplings'] = np.zeros(shape_fij).astype('bool')
-            # else:
-            #     # size = len(fij.flatten())
-            #     # Mask = np.zeros(size)
-            #     # ind_1 = np.random.choice(np.arange(size),int(size*(1-options['Pruning_perc'])),replace=False)
-            #     # Mask[ind_1] = 1
-            #     # Mask = Mask.reshape(fij.shape)
-
-            #     Mask = prun.prune_params(train_align,cij=True, weight=0.8, pct = 100*options['Pruning_perc'])
-            #     assert shape_fij == Mask.shape
-            #     print('Pruning pct: ',1-np.sum(Mask)/np.sum(np.ones(Mask.shape)))
-
-            #     options['Pruning Mask Couplings'] = Mask.astype('bool')
-            
-            # p_val = ut.compute_p_values(train_align,options['q'])
-            # thresh = np.sort((p_val+p_val.T).flatten())[int((1-options['Pruning_perc'])*p_val.size)]
-            # options['Pruning Mask'] = np.expand_dims(((p_val+p_val.T)<thresh),axis=(2,3))
-
-            # Cij = ut.CalcCorr2(fi,fij)
-            # thresh = np.sort(Cij.flatten())[int(0.97*Cij.size)] 
-            # options['Pruning Mask'] = (Cij>thresh)
-    ################################
-
 def Init_Param(options,J0,h0,N_eff,fi):
 
     ########### PARAM INIT #########
-    if options['Param_init'] == 'Zero':
+    if options['Param_init'].lower() == 'zero':
         Jinit = np.zeros((options['L'],options['L'],options['q'],options['q']))
         hinit = np.zeros((options['L'],options['q']))
-    elif options['Param_init'] == 'Profile':
+    elif options['Param_init'].lower() == 'profile':
         Jinit = np.zeros((options['L'],options['L'],options['q'],options['q']))
         alpha = 1/N_eff
         fi_init = (1-alpha)*fi + alpha/options['q']
         hinit = np.log(fi_init) #- np.log(1 - fi_init)
-    elif options['Param_init'] == 'Custom':
+    elif options['Param_init'].lower() == 'custom':
         #assert J0 is not None and h0 is not None
         Jinit = J0
         hinit = h0
-    elif options['Param_init']=='Random':
+    elif options['Param_init'].lower()=='random':
         ma = 1
         Jinit = np.random.uniform(-ma,ma,(options['L'],options['L'],options['q'],options['q']))
         hinit = np.random.uniform(-ma,ma,(options['L'],options['q']))
@@ -326,13 +281,13 @@ def GradLogLike(w,lambdaJ,lambdah,fi,fij,options,align_subsamp=None):
     ################################
 
     ####### COMPUTE GRADIENTS ######
-    if options['regul']=='L2':
+    if options['regul'].lower()=='l2':
         gradh=fi_mod-fi+2*lambdah*h
         if J is not None: gradJ=fij_mod-fij+2*lambdaJ*J
-    elif options['regul']=='L1':
+    elif options['regul'].lower()=='l1':
         gradh=fi_mod-fi+lambdah
         if J is not None: gradJ=fij_mod-fij+lambdaJ
-    elif options['regul']=='Both':
+    elif options['regul'].lower()=='both':
         gradh=fi_mod-fi+lambdah[0] + 2*lambdah[1]*h
         if J is not None: gradJ=fij_mod-fij+lambdaJ[0] + 2*lambdaJ[1]*J
     ################################

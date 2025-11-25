@@ -1,3 +1,19 @@
 [build-system]
-requires = ["setuptools"]
+requires = ["setuptools>=61.0"]
 build-backend = "setuptools.build_meta"
+
+[project]
+name = "SBM"
+version = "0.0.1"
+authors = [
+    {name="Marion"},
+]
+description = "Stochastic Boltzmann Machine"
+readme = "README.md"
+requires-python = ">=3.11"
+license = {text = "MIT"}
+
+urls = {"Homepage" = "https://github.com/StatBio/Stochastic-Boltzmann-Machine","Bug Tracker" = "https://github.com/StatBio/Stochastic-Boltzmann-Machine/-/issues"}
+
+[tool.setuptools.packages.find]
+where = ["src"]
