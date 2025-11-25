@@ -7,12 +7,12 @@
 
 ####################### MODULES #######################
 import itertools as it
-import MonteCarlo_Potts # type: ignore
-import MonteCarlo_PottsProf # type: ignore
-import numpy as np
-from Bio import SeqIO
-from tqdm import tqdm
-from scipy.spatial.distance import squareform
+import SBM.MonteCarlo.MCMC_Potts.MonteCarlo_Potts as mc #type: ignore
+import SBM.MonteCarlo.MCMC_PottsProf.MonteCarlo_PottsProf as mcp # type: ignore
+import numpy as np #type: ignore
+from Bio import SeqIO #type: ignore
+from tqdm import tqdm #type: ignore
+from scipy.spatial.distance import squareform #type: ignore
 import csv as csv
 
 ##########################################################
@@ -125,8 +125,8 @@ def Create_modAlign(output,N,delta_t = None,ITER='',temperature=1):
 		L,q = J.shape[0],J.shape[2]
 	w = np.array(Wj(J,h))
 	states = np.random.randint(q,size=(N,L)).astype('int32')
-	if J is None: MonteCarlo_PottsProf.MC(w,states,int(delta_t),int(q))
-	else: MonteCarlo_Potts.MC(w,states,int(delta_t),int(q))
+	if J is None: mcp.MC(w,states,int(delta_t),int(q))
+	else: mc.MC(w,states,int(delta_t),int(q))
 	MSA = np.copy(states)
 	return np.array(MSA,dtype = 'int64')
 

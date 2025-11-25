@@ -1,19 +1,33 @@
 [build-system]
-requires = ["setuptools>=61.0"]
-build-backend = "setuptools.build_meta"
+requires = [
+    "scikit-build-core>=0.7.0",
+    "numpy",
+]
+build-backend = "scikit_build_core.build"
 
 [project]
 name = "SBM"
 version = "0.0.1"
-authors = [
-    {name="Marion"},
-]
 description = "Stochastic Boltzmann Machine"
-readme = "README.md"
+authors = [{ name = "Marion" }]
 requires-python = ">=3.11"
-license = {text = "MIT"}
+readme = "README.md"
 
-urls = {"Homepage" = "https://github.com/StatBio/Stochastic-Boltzmann-Machine","Bug Tracker" = "https://github.com/StatBio/Stochastic-Boltzmann-Machine/-/issues"}
+dependencies = [
+    "more-itertools",
+]
 
-[tool.setuptools.packages.find]
-where = ["src"]
+[project.urls]
+Homepage = "https://github.com/StatBio/Stochastic-Boltzmann-Machine"
+Bug-Tracker = "https://github.com/StatBio/Stochastic-Boltzmann-Machine/-/issues"
+
+[tool.scikit-build]
+minimum-version = "0.7"
+wheel.py-api = "cp311"
+
+# ============================================================
+# Force LLVM compiler on macOS — REQUIRED for OpenMP
+# ============================================================
+[tool.scikit-build.cmake.define]
+CMAKE_C_COMPILER = "/opt/homebrew/opt/llvm/bin/clang"
+CMAKE_CXX_COMPILER = "/opt/homebrew/opt/llvm/bin/clang++"
