@@ -5,16 +5,17 @@ Created in 2024
 """
 
 ####################### MODULES #######################
-import numpy as np
+import numpy as np #type: ignore
 import SBM.SBM_GD.SBM_proteins as sbm
 import SBM.utils.utils as ut
 import argparse
 from pathlib import Path
-import os
+import SBM
 
-notebook_dir = Path.cwd()
-data_dir = notebook_dir.parent / "data"
-results_dir = notebook_dir.parent / "results"
+ROOT = Path(SBM.__file__).resolve().parents[2] 
+data_dir = ROOT / "data"
+results_dir = ROOT / "results"
+
 ##########################################################
 
 def run_SBM(Input_MSA,fam,Model,train_file,N_iter, m, N_chains_list,Nb_rep,Nb_av,k_MCMC,TestTrain,ParamInit,lambdJ,lambdh,theta):
@@ -90,23 +91,25 @@ def run_SBM(Input_MSA,fam,Model,train_file,N_iter, m, N_chains_list,Nb_rep,Nb_av
                                      'q':output['options']['q'],
                                      'L':output['options']['L']}
 
-            dossier = fam+"/"
+            dossier = results_dir / fam
+            dossier.mkdir(parents=True, exist_ok=True)
 
-            if not os.path.exists(dossier):
-                os.makedirs(dossier)
-            
             r = 0
             file_name = fam
-            key_list = list(output_av['options0'].keys())
-            key_list = np.sort(key_list)
+            key_list = sorted(output_av['options0'].keys())
+
             for k in key_list:
-                file_name+='_'+k+str(output_av['options0'][k])
-            file_name+='_N_Av'+str(Nb_av)
-            
-            while os.path.exists(dossier+file_name+'_R'+str(r)+'.npy'):
-                r+=1
-            path_result = dossier+file_name+'_R'+str(r)+'.npy'
-            np.save(results_dir/path_result, output_av)
+                file_name += f"_{k}{output_av['options0'][k]}"
+
+            file_name += f"_N_Av{Nb_av}"
+
+            path_result = dossier / f"{file_name}_R{r}.npy"
+
+            while path_result.exists():
+                r += 1
+                path_result = dossier / f"{file_name}_R{r}.npy"
+            np.save(path_result, output_av)
+
     
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Process SBM parameters.')
@@ -130,3 +133,5 @@ if __name__ == "__main__":
     run_SBM(args.Input_MSA,args.fam,args.mod,args.train_file,args.N_iter, 
             args.m, args.N_chains,args.rep,args.N_av,args.k_MCMC,args.TestTrain,
             args.ParamInit,args.lambdJ,args.lambdh,args.theta)
+    
+
