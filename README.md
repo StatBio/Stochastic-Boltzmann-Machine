@@ -1,11 +1,13 @@
 # SBM: Stochastic Boltzmann Machine
-Tested with Python 3.7.3
+Tested with Python 3.11.11
 
-## Prerequisites
+SBM contains the implementation of a boltzmann machine with L-BFGS gradient descent and implicit regularization. The Monte-Carlo is written in C++ with OpenMP, compiled automatically using scikit-build-core and CMake and 
 
-### Create a virtual env
+## Installation
 
-First of all, I recommend creating a virtual environment. Here's an example using virtualenv:
+### Create a virtual environment (recommended)
+
+Here's an example using virtualenv:
 
 ```
 pip3 install virtualenv
@@ -13,20 +15,42 @@ virtualenv -p python3 env_SBM
 source env_SBM/bin/activate
 ```
 
-### Install requirements
+### System requirements
 
-Install python and python library from requirements.txt: 
+These requirements depend on your operating system.
+
+**macOS**
+macOS’s default compiler AppleClang does NOT support OpenMP.
+Therefore you MUST install LLVM + libomp + ninja:
+```
+brew install llvm libomp ninja
+```
+The build system automatically detects and uses:
+- /opt/homebrew/opt/llvm/bin/clang
+- /opt/homebrew/opt/llvm/bin/clang++
+- OpenMP via libomp
+- ninja as CMake generator
+
+**Linux**
+
+The following system dependencies are required:
+
+- GCC / G++ (via build-essential): Required to compile the C++ Monte Carlo modules.
+
+- Python development headers (python3-dev): Required because the C++ modules include Python.h.
+
+- CMake: Used by scikit-build-core to configure and build the extension modules.
+
+- Ninja (ninja-build): Recommended build backend used automatically by scikit-build-core.
+
+### Python dependencies
+
+Install Python requirements:
 ```
 pip3 install -r requirements.txt --no-cache-dir
 ```
 
-### Compile C_MonteCarlo module:
-
-```
-sh src/SBM/MonteCarlo/MCMC_Potts/make_mcmc_Potts.sh
-```
-
-### Install the editable version of SBM :
+### Build & install SBM (with C++ modules)
 
 ```
 pip3 install -e .
@@ -44,9 +68,9 @@ np.save('data/MSA_array/MSA_fam.npy',MSA)
 
 ## Training
 
-See demo_SBM for an example
+See demo-SBM-CM-family for an example on the Chorismate Mutase family.
 
-## Example inside data folder
+## Example structure (data folder)
 
 ```
 data/
@@ -58,14 +82,13 @@ data/
 ```
 
 
-## How to use jupyter notebook on a server
+## Jupyter notebook on a server
 
 ```
 pip3 install ipykernel
 ````
-
-Then you can create a notebook and choose python environment env_SBM
+Then select the environment kernel env_SBM inside Jupyter.
 
 ## Citation
 
-If you use this code or data, please cite the associated publication:
+If you use this code or data, please cite the associated publication.
