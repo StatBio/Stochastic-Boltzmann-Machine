@@ -20,8 +20,9 @@ source env_SBM/bin/activate
 These requirements depend on your operating system.
 
 **macOS**
-macOS’s default compiler AppleClang does NOT support OpenMP.
-Therefore you MUST install LLVM + libomp + ninja:
+
+macOS’s default compiler AppleClang does not support OpenMP.
+Therefore you must install LLVM + libomp + ninja:
 ```
 brew install llvm libomp ninja
 ```
