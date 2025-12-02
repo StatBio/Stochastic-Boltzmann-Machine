@@ -2,14 +2,6 @@ cmake_minimum_required(VERSION 3.15)
 project(SBM LANGUAGES CXX)
 
 # ================================================================
-# Use LLVM on macOS (required for OpenMP)
-# ================================================================
-if(APPLE)
-    set(CMAKE_C_COMPILER "/opt/homebrew/opt/llvm/bin/clang")
-    set(CMAKE_CXX_COMPILER "/opt/homebrew/opt/llvm/bin/clang++")
-endif()
-
-# ================================================================
 # Python + NumPy
 # ================================================================
 find_package(Python REQUIRED COMPONENTS Interpreter Development.Module Development.Embed NumPy)

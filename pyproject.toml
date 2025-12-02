@@ -25,9 +25,7 @@ Bug-Tracker = "https://github.com/StatBio/Stochastic-Boltzmann-Machine/-/issues"
 minimum-version = "0.7"
 wheel.py-api = "cp311"
 
-# ============================================================
-# Force LLVM compiler on macOS — REQUIRED for OpenMP
-# ============================================================
-[tool.scikit-build.cmake.define]
-CMAKE_C_COMPILER = "/opt/homebrew/opt/llvm/bin/clang"
-CMAKE_CXX_COMPILER = "/opt/homebrew/opt/llvm/bin/clang++"
+# IMPORTANT : activer un toolchain automatique sur macOS
+cmake.args = [
+    "-DCMAKE_TOOLCHAIN_FILE=cmake/macos_llvm.cmake"
+]
