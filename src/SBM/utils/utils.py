@@ -116,13 +116,15 @@ def Create_modAlign(output,N,delta_t = None,ITER='',temperature=1):
 	if delta_t is None:
 		delta_t = output['options0']['k_MCMC']
 
-	h,J = np.copy(output['h'+str(ITER)]),np.copy(output['J'+str(ITER)])
-	if h is not None:
-		h /= temperature
+	if output['h'+str(ITER)] is not None:
+		h = np.copy(output['h'+str(ITER)])/temperature
 		L,q = h.shape
-	if J is not None:
-		J /= temperature
+	else: h=None
+
+	if output['J'+str(ITER)] is not None:
+		J /= np.copy(output['J'+str(ITER)])/temperature
 		L,q = J.shape[0],J.shape[2]
+	else: J=None
 	w = np.array(Wj(J,h))
 	states = np.random.randint(q,size=(N,L)).astype('int32')
 	if J is None: mcp.MC(w,states,int(delta_t),int(q))
