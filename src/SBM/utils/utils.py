@@ -122,7 +122,7 @@ def Create_modAlign(output,N,delta_t = None,ITER='',temperature=1):
 	else: h=None
 
 	if output['J'+str(ITER)] is not None:
-		J /= np.copy(output['J'+str(ITER)])/temperature
+		J = np.copy(output['J'+str(ITER)])/temperature
 		L,q = J.shape[0],J.shape[2]
 	else: J=None
 	w = np.array(Wj(J,h))
